@@ -9,6 +9,7 @@ public class CameraFollow : MonoBehaviour
     void LateUpdate()
     {
         if (target == null) return;
+
         Vector3 desiredPosition = target.position + offset;
         transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * smoothSpeed);
         transform.LookAt(target.position + Vector3.up * 1f);
