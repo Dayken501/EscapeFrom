@@ -17,34 +17,24 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector2 input = Vector2.zero;
-        if (Keyboard.current.wKey.isPressed) input.y += 1;
-        if (Keyboard.current.sKey.isPressed) input.y -= 1;
-        if (Keyboard.current.aKey.isPressed) input.x -= 1;
-        if (Keyboard.current.dKey.isPressed) input.x += 1;
-
-        // Движение относительно камеры
-        Vector3 camForward = mainCamera.transform.forward;
-        Vector3 camRight = mainCamera.transform.right;
-        camForward.y = 0;
-        camRight.y = 0;
-        camForward.Normalize();
-        camRight.Normalize();
-
-        Vector3 moveDirection = (camForward * input.y + camRight * input.x).normalized;
-        rb.linearVelocity = new Vector3(moveDirection.x * speed, rb.linearVelocity.y, moveDirection.z * speed);
-
-        // Персонаж смотрит на курсор
+        // Поворот персонажа к курсору
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+        Plane groundPlane = new Plane(Vector3.up, transform.position);
         if (groundPlane.Raycast(ray, out float distance))
         {
             Vector3 lookPoint = ray.GetPoint(distance);
-            lookPoint.y = transform.position.y;
             Vector3 lookDirection = lookPoint - transform.position;
-            if (lookDirection != Vector3.zero)
+            lookDirection.y = 0;
+            if (lookDirection.sqrMagnitude > 0.01f)
                 transform.rotation = Quaternion.LookRotation(lookDirection);
         }
+
+        // Движение относительно взгляда персонажа
+        Vector2 input = Vector2.zero;
+        if (Keyboard.current.wKey.isPressed) input.y += 1;
+
+        Vector3 moveDirection = (transform.forward * input.y + transform.right * input.x).normalized;
+        rb.linearVelocity = new Vector3(moveDirection.x * speed, rb.linearVelocity.y, moveDirection.z * speed);
 
         animator.SetBool("isRunning", moveDirection != Vector3.zero);
     }
