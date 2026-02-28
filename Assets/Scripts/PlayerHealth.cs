@@ -10,23 +10,21 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth = maxHealth;
         animator = GetComponentInChildren<Animator>();
+        UIManager.Instance.UpdateHealth(currentHealth, maxHealth);
     }
 
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        Debug.Log("Player HP: " + currentHealth);
+        UIManager.Instance.UpdateHealth(currentHealth, maxHealth);
 
         if (currentHealth <= 0)
-        {
             Die();
-        }
     }
 
     void Die()
     {
         animator.SetBool("isDead", true);
-        Debug.Log("Player is dead!");
         Invoke("DisablePlayer", 2f);
     }
 

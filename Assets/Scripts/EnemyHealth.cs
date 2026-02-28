@@ -15,12 +15,8 @@ public class EnemyHealth : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        Debug.Log("Enemy HP: " + currentHealth);
-
         if (currentHealth <= 0)
-        {
             Die();
-        }
     }
 
     void Die()
@@ -28,6 +24,8 @@ public class EnemyHealth : MonoBehaviour
         animator.SetBool("isDead", true);
         GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
         GetComponent<EnemyAI>().enabled = false;
+        UIManager.Instance.AddKill();
+        GameManager.Instance.EnemyDied();
         Destroy(gameObject, 2f);
     }
 }
