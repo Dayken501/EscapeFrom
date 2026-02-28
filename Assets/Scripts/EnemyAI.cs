@@ -9,11 +9,13 @@ public class EnemyAI : MonoBehaviour
     public float attackCooldown = 1f;
 
     private NavMeshAgent agent;
+    private Animator animator;
     private float lastAttackTime;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponentInChildren<Animator>();
         player = GameObject.FindWithTag("Player").transform;
     }
 
@@ -26,15 +28,21 @@ public class EnemyAI : MonoBehaviour
         if (distance <= attackRange)
         {
             agent.ResetPath();
+            animator.SetBool("isRunning", false);
+            animator.SetBool("isAttacking", true);
             Attack();
         }
         else if (distance <= chaseRange)
         {
             agent.SetDestination(player.position);
+            animator.SetBool("isRunning", true);
+            animator.SetBool("isAttacking", false);
         }
         else
         {
             agent.ResetPath();
+            animator.SetBool("isRunning", false);
+            animator.SetBool("isAttacking", false);
         }
     }
 
@@ -43,7 +51,7 @@ public class EnemyAI : MonoBehaviour
         if (Time.time - lastAttackTime >= attackCooldown)
         {
             lastAttackTime = Time.time;
-            Debug.Log("Zombie attacks player!");
+            player.GetComponent<PlayerHealth>().TakeDamage(10);
         }
     }
 }
