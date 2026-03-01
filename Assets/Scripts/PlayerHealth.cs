@@ -25,6 +25,7 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         animator.SetBool("isDead", true);
+        UIManager.Instance.ShowGameOver();
         Invoke("DisablePlayer", 2f);
     }
 

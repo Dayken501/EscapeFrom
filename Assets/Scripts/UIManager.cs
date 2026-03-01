@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -9,6 +10,10 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI killCountText;
 
+    [Header("Panels")]
+    public GameObject winPanel;
+    public GameObject gameOverPanel;
+
     private int killCount = 0;
 
     public static UIManager Instance;
@@ -16,6 +21,12 @@ public class UIManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+    }
+
+    void Start()
+    {
+        winPanel.SetActive(false);
+        gameOverPanel.SetActive(false);
     }
 
     public void UpdateHealth(int current, int max)
@@ -35,5 +46,23 @@ public class UIManager : MonoBehaviour
     {
         killCount++;
         killCountText.text = "Kills: " + killCount;
+    }
+
+    public void ShowWin()
+    {
+        winPanel.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    public void ShowGameOver()
+    {
+        gameOverPanel.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    public void Restart()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

@@ -83,6 +83,6 @@ public class GameManager : MonoBehaviour
 
     void Win()
     {
-        Debug.Log("YOU WIN!");
+        UIManager.Instance.ShowWin();
     }
 }
