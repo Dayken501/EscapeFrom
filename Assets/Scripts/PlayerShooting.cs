@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerShooting : MonoBehaviour
 {
     public float fireRate = 0.2f;
-    public float shootRange = 20f;
+    public float shootRange = 50f;
     public int damage = 25;
 
     private Animator animator;
@@ -39,13 +39,15 @@ public class PlayerShooting : MonoBehaviour
     {
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 
-        if (Physics.Raycast(ray, out RaycastHit hit, shootRange))
+        RaycastHit[] hits = Physics.RaycastAll(ray, shootRange);
+        foreach (RaycastHit hit in hits)
         {
             EnemyHealth enemy = hit.collider.GetComponentInParent<EnemyHealth>();
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
-                Debug.Log("Hit enemy! Damage: " + damage);
+                Debug.Log("Hit: " + hit.collider.name);
+                break;
             }
         }
     }

@@ -1781,6 +1781,7 @@ GameObject:
   - component: {fileID: -6975217544412420445}
   - component: {fileID: -4394631591029829434}
   - component: {fileID: 6630231225614258716}
+  - component: {fileID: -7243843028338825264}
   m_Layer: 0
   m_Name: Zombie1
   m_TagString: Untagged
@@ -1928,6 +1929,20 @@ MonoBehaviour:
   chaseRange: 10
   attackRange: 1.5
   attackCooldown: 1
+--- !u!114 &-7243843028338825264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4493914613880827488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7526f54da3640143b70fd5cb7f07c52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  maxHealth: 50
+  currentHealth: 0
 --- !u!1 &4710940672626480558
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     private float timeRemaining;
     private float lastSpawnTime;
     private int currentEnemyCount;
-    public int maxEnemies = 20;
+    public int maxEnemies = 50;
 
     public static GameManager Instance;
 
@@ -70,10 +70,7 @@ public class GameManager : MonoBehaviour
 
     int GetSpawnCount()
     {
-        if (timeRemaining > 420f) return 1;
-        else if (timeRemaining > 240f) return 2;
-        else if (timeRemaining > 60f) return 3;
-        else return 5;
+        return 10;
     }
 
     public void EnemyDied()
