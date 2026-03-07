@@ -1,54 +1,50 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
-    public float rotationSpeed = 15f;
+    public float rotationSpeed = 10f;
     private Rigidbody rb;
     private Animator animator;
-    private Camera mainCamera;
+    private CameraFollow cameraFollow;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
-        mainCamera = Camera.main;
+        cameraFollow = Camera.main.GetComponent<CameraFollow>();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void FixedUpdate()
     {
-        // Поворот к курсору
-        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        Plane groundPlane = new Plane(Vector3.up, transform.position);
-        if (groundPlane.Raycast(ray, out float distance))
-        {
-            Vector3 lookPoint = ray.GetPoint(distance);
-            Vector3 lookDirection = lookPoint - transform.position;
-            lookDirection.y = 0;
-            if (lookDirection.sqrMagnitude > 0.01f)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
-            }
-        }
+        float yaw = cameraFollow.GetYaw();
+        Vector3 camForward = Quaternion.Euler(0, yaw, 0) * Vector3.forward;
+        Vector3 camRight = Quaternion.Euler(0, yaw, 0) * Vector3.right;
 
-        // Движение вперёд и назад
         Vector3 moveDirection = Vector3.zero;
-        bool isBackward = false;
+        if (Keyboard.current.wKey.isPressed) moveDirection += camForward;
+        if (Keyboard.current.sKey.isPressed) moveDirection -= camForward;
+        if (Keyboard.current.aKey.isPressed) moveDirection -= camRight;
+        if (Keyboard.current.dKey.isPressed) moveDirection += camRight;
 
-        if (Keyboard.current.wKey.isPressed)
-            moveDirection = transform.forward;
-
-        if (Keyboard.current.sKey.isPressed)
-        {
-            moveDirection = -transform.forward;
-            isBackward = true;
-        }
-
+        moveDirection = moveDirection.normalized;
         rb.linearVelocity = new Vector3(moveDirection.x * speed, rb.linearVelocity.y, moveDirection.z * speed);
 
-        animator.SetBool("isRunning", moveDirection != Vector3.zero && !isBackward);
-        animator.SetBool("isWalkingBack", isBackward);
+        if (moveDirection != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+            animator.SetBool("isRunning", true);
+        }
+        else
+        {
+            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+            animator.SetBool("isRunning", false);
+        }
+
+        animator.SetBool("isWalkingBack", false);
     }
 }
