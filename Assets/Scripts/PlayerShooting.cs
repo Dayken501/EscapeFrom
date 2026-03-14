@@ -6,15 +6,18 @@ public class PlayerShooting : MonoBehaviour
     public float fireRate = 0.2f;
     public float shootRange = 50f;
     public int damage = 25;
+    public AudioClip shootSound;
 
     private Animator animator;
     private Camera mainCamera;
+    private AudioSource audioSource;
     private float lastFireTime;
 
     void Start()
     {
         animator = GetComponentInChildren<Animator>();
         mainCamera = Camera.main;
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -37,6 +40,9 @@ public class PlayerShooting : MonoBehaviour
 
     void Shoot()
     {
+        if (shootSound != null)
+            audioSource.PlayOneShot(shootSound);
+
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 
         RaycastHit[] hits = Physics.RaycastAll(ray, shootRange);
@@ -46,7 +52,6 @@ public class PlayerShooting : MonoBehaviour
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
-                Debug.Log("Hit: " + hit.collider.name);
                 break;
             }
         }
