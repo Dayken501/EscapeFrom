@@ -43,16 +43,16 @@ public class PlayerShooting : MonoBehaviour
         if (shootSound != null)
             audioSource.PlayOneShot(shootSound);
 
-        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        // Стрельба от персонажа вперёд куда смотрит оружие
+        Vector3 shootOrigin = transform.position + Vector3.up * 1.2f;
+        Vector3 shootDirection = transform.forward;
 
-        RaycastHit[] hits = Physics.RaycastAll(ray, shootRange);
-        foreach (RaycastHit hit in hits)
+        if (Physics.Raycast(shootOrigin, shootDirection, out RaycastHit hit, shootRange))
         {
             EnemyHealth enemy = hit.collider.GetComponentInParent<EnemyHealth>();
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
-                break;
             }
         }
     }
